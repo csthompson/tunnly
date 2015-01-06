@@ -10,10 +10,13 @@ import (
   "io"
   "net/http"
   "bytes"
-  "flag"
+  _"flag"
   "code.google.com/p/gopass"
   "errors"
   "strings"
+  "os/exec"
+  "os"
+  "log"
 )
 
 //Decrypt file
@@ -117,16 +120,30 @@ func downloadFromUrl(url string) []byte {
   return buf.Bytes()
 }
 
+//Use the openvpn command line to connect to the network
+func connect(filename string) {
+  cmd := exec.Command("sudo", "/usr/local/sbin/openvpn", "--config", filename)
+  result, _ := cmd.Output()
+  fmt.Println(string(result))
+}
+
 
 func main() {
-  net := flag.String("net", "", "The tunnly network to connect to")
 
-  flag.Parse()
+  args := os.Args[1:]
 
-  data := downloadFromUrl("http://tunnly.opendev.io:5000/network/config/" + strings.TrimSpace(*net))
+  if len(args) < 2 {
+    log.Fatal("Tunnly requires 2 arguments!")
+  }
 
-  pass, _ := gopass.GetPass("Please enter the passphrase:")
+  if args[0] == "connect" {
+    data := downloadFromUrl("http://tunnly.opendev.io:5000/network/config/" + strings.TrimSpace(args[1]))
 
-  writeFile(data, pass, *net + ".ovpn")
+    pass, _ := gopass.GetPass("Please enter the passphrase:")
+
+    writeFile(data, pass, args[1] + ".ovpn")
+
+    connect(args[1] + ".ovpn")
+  }
 
 }
