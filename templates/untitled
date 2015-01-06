@@ -1,0 +1,30 @@
+<head>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/css/tunnly.css">
+	<script src="/static/js/bootstrap.min.js"></script>
+<head>
+
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Network Created!</h1>
+        <p class="lead">Below is your Tunnly Connect code</p>
+        <form>
+		  <div class="form-group">
+		  	<div class="row">
+		    	<label for="exampleInputPassword1">Passcode</label>
+		    	<center>
+		    	<input type="text" class="form-control" id="exampleInputPassword1" maxlength="4" style="width: 200px;">
+		    	</center>
+		    </div>
+		  </div>
+		  <button type="submit" class="btn btn-lg btn-success">Create!</button>
+		</form>
+      </div>
+
+      <footer class="footer">
+        <p>&copy; Tunnly 2014</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>

@@ -1,0 +1,47 @@
+<head>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/css/tunnly.css">
+	<script src="/static/js/bootstrap.min.js"></script>
+<head>
+
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Network Created!</h1>
+        <p class="lead">Below is your Tunnly Connect code</p>
+        {% with messages = get_flashed_messages() %}
+			{% if messages %}
+		        <h3>{{ messages[0] }}</h3>
+        <div class="panel panel-default">
+  			<div class="panel-body">
+			<b>On Mac:</b> 
+			<p>-> Download the client</p>
+			<p>-> RUN: <code>sudo chmod 775 ./tunnly</code></p>
+			<p>-> RUN: <code>./tunnly -net={{ messages[0]}}</code></p>
+			<p>-> Install <a href="http://www.macupdate.com/app/mac/16969/tunnelblick">tunnelblick</a></p>
+			<p>-> Double click the config file {{ messages[0] }}.ovpn</p>
+			</div>
+		</div>
+        <div class="panel panel-default">
+  			<div class="panel-body">
+				<b>On Windows:</b>
+				<p>-> Download the windows client</p>
+				<p>-> RUN: <code>tunnly.exe -net={{ messages[0] }}</code></p>
+				<p>-> Install <a href="https://openvpn.net/index.php/open-source/downloads.html">OpenVPN</a> for Windows</p>
+				<p>-> RUN: <code>openvpn {{messages[0] }}.ovpn</code></p>
+			</div>
+		</div>
+
+		{% endif %}
+		{% endwith %}
+		<br>
+		<br>
+		Download Mac Client <a href="https://www.dropbox.com/s/kskso98wtpz4t7x/tunnly?dl=0">HERE</a>
+		Download Windows Client <a href="https://www.dropbox.com/s/e0eoelp0hgd4vfv/tunnly.exe?dl=0">HERE</a>
+      </div>
+      <footer class="footer">
+        <p>&copy; Tunnly 2014</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>

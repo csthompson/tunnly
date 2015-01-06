@@ -1,0 +1,38 @@
+<head>
+	<link rel="stylesheet" href="/static/css/bootstrap.min.css">
+	<link rel="stylesheet" href="/static/css/tunnly.css">
+	<script src="/static/js/bootstrap.min.js"></script>
+<head>
+
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Tunnly <i> ALPHA </i></h1>
+        <p class="lead">Generate a new 15 Minute Tunnly network</p>
+        <form action="/network/new" method="POST">
+		  <div class="form-group">
+		  	<div class="row">
+		    	<label for="exampleInputPassword1">4 Digit Passcode</label>
+		    	<center>
+		    	<input name="passcode" type="text" class="form-control" id="exampleInputPassword1" maxlength="4" style="width: 200px;">
+		    	</center>
+		    	{% with messages = get_flashed_messages() %}
+					{% if messages %}
+		        	<div class="alert alert-danger" role="alert">{{ messages[0] }}</div>
+		        	{% endif %}
+				{% endwith %}
+		    </div>
+		  </div>
+		  <button type="submit" class="btn btn-lg btn-success">Create!</button>
+		</form>
+      </div>
+
+      <h4>WHY?</h4>
+      <p>Why go through all the trouble with creating an account when you need some computers/machines linked for a small amount of time? Tunnly allows you to generate a network on the fly, and protect/anonymize it with a 4 digit passcode and simple shortcode. Think imgur or bit.ly, but for networks. Networks expire after 15 minutes, just enough time to get those few files transfered, or to setup some simple infrastructure without going through all the hastle of setting up a user account.</p>
+
+      <footer class="footer">
+        <p>&copy; Tunnly 2014</p>
+      </footer>
+
+    </div> <!-- /container -->
+</body>
