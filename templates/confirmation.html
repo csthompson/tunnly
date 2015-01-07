@@ -15,11 +15,9 @@
         <div class="panel panel-default">
   			<div class="panel-body">
 			<b>On Mac:</b> 
-			<p>-> Download the client</p>
-			<p>-> RUN: <code>sudo chmod 775 ./tunnly</code></p>
-			<p>-> RUN: <code>./tunnly -net={{ messages[0]}}</code></p>
-			<p>-> Install <a href="http://www.macupdate.com/app/mac/16969/tunnelblick">tunnelblick</a></p>
-			<p>-> Double click the config file {{ messages[0] }}.ovpn</p>
+			<p>-> Install Homebrew: <code>ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"</code></p>
+			<p>-> RUN: <code>brew install tunnly.opendev.io:5000/static/homebrew/tunnly.rb</code></p>
+			<p>-> RUN: <code>tunnly connect {{ messages[0]}}</code></p>
 			</div>
 		</div>
         <div class="panel panel-default">
