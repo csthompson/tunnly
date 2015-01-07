@@ -143,6 +143,8 @@ func main() {
 
     writeFile(data, pass, args[1] + ".ovpn")
 
+    fmt.Println("Tunnly initiated. Please do not close this window! :)")
+
     connect(args[1] + ".ovpn")
   }
 
