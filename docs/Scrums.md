@@ -3,9 +3,10 @@
 * Fix setup for Mac (David)
 * Setup Git, Gerrit, and CI (David & Cooper)
 * Research and plan for Elastic Tunnly (All)
+* Flask with Stripe integration (Robert)
 
 ## Links
-[Mind Map for Planning Elatic Tunnly](http://www.mindmeister.com/503332085?t=B9OHJ7wIwO)
+[Mind Map for Planning Elastic Tunnly](http://www.mindmeister.com/503332085?t=B9OHJ7wIwO)
 
 ## Notes
 *Gerrit should work on a +2 method +1 when CI checks for errors and if it can deploy, +2 when peer code reviews it.*
