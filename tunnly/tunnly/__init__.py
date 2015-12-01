@@ -27,24 +27,39 @@ import base64
 
 
 class DockerInterface:
-    client = Client(**kwargs_from_env())
+    client = Client(base_url='unix://var/run/docker.sock')
 
-    def __createNetContainer(self):
+    def __createNetContainer(self, udp, tcp):
+        print "STRING" + str(udp) + str(tcp)
+
+        config = self.client.create_host_config(
+            privileged= True, 
+            port_bindings={
+                '1194/udp': udp, 
+                443: tcp,
+            }
+        )
+
         container = self.client.create_container(
-            image='jpetazzo/openvpn',
+            image='csthompson/dockvpn',
             detach= 1,
-            ports=[(1194, 'udp'), 443])
+            ports=[(1194, 'udp'), 443],
+            host_config= config
+        )
+        print "Container created"
         return container
 
-    def __startNetContainer(self, container, udp, tcp):
+    def __startNetContainer(self, container):
+        print str(container.get('Id'))
         response = self.client.start(
             container=container.get('Id'),
-            privileged= 1,
-            port_bindings={'1194/udp': udp, 443: tcp})
+        )
 
     def newNetwork(self, udp, tcp):
-        container = self.__createNetContainer()
-        response = self.__startNetContainer(container, udp, tcp)
+        print "UDP STRING"
+        print str(udp)
+        container = self.__createNetContainer(udp, tcp)
+        response = self.__startNetContainer(container)
         return container
 
     def killNetwork(sef, dockerId):
@@ -127,8 +142,8 @@ class HostInterface:
             f.write(cipherText)
 
     def modifyConfig(self, udp, tcp, dockerId):
-        udpChange = "sed -i 's/^remote 104.236.74.10 1194 udp*/remote 104.236.74.10 " +  str(udp) + " udp/' /tmp/clientConfigs/" + dockerId + ".ovpn"
-        tcpChange = "sed -i 's/^remote 104.236.74.10 443 tcp-client*/remote 104.236.74.10 " +  str(tcp) + " tcp-client/' /tmp/clientConfigs/" + dockerId + ".ovpn"
+        udpChange = "sed -i 's/^remote 159.203.116.59 1194 udp*/remote 159.203.116.59 " +  str(udp) + " udp/' /tmp/clientConfigs/" + dockerId + ".ovpn"
+        tcpChange = "sed -i 's/^remote 159.203.116.59 443 tcp-client*/remote 159.203.116.59 " +  str(tcp) + " tcp-client/' /tmp/clientConfigs/" + dockerId + ".ovpn"
         err = subprocess.call(shlex.split(udpChange))
         print "Error for udp change ", err
         err = subprocess.call(shlex.split(tcpChange))
@@ -137,12 +152,15 @@ class HostInterface:
 
 def createNewNetwork(passcode):
 
+    
     sql = MysqlInterface('localhost', 'srv_tunnly', 'tunnlytest', 'tst_tunnly')
     dockerInst = DockerInterface()
 
     random.seed()
     udp = random.randint(1024, 49151)
     tcp = random.randint(1024, 49151)
+
+
     #Make sure each port is unique
     while udp == tcp or sql.checkIfPortExists(udp) or sql.checkIfPortExists(tcp):
         udp = random.randint(1024, 49151)
