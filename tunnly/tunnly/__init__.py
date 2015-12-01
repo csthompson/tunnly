@@ -18,6 +18,7 @@ import tarfile, io
 import time
 import subprocess
 import shlex
+import socket
 
 from Crypto import Random
 from Crypto.Cipher import AES
@@ -142,8 +143,14 @@ class HostInterface:
             f.write(cipherText)
 
     def modifyConfig(self, udp, tcp, dockerId):
-        udpChange = "sed -i 's/^remote 159.203.116.59 1194 udp*/remote 159.203.116.59 " +  str(udp) + " udp/' /tmp/clientConfigs/" + dockerId + ".ovpn"
-        tcpChange = "sed -i 's/^remote 159.203.116.59 443 tcp-client*/remote 159.203.116.59 " +  str(tcp) + " tcp-client/' /tmp/clientConfigs/" + dockerId + ".ovpn"
+        #Get the current host's ip address
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 0))  # connecting to a UDP address doesn't send packets
+        local_ip_address = s.getsockname()[0]
+
+        udpChange = "sed -i 's/^remote " + str(local_ip_address) + " 1194 udp*/remote " + str(local_ip_address) + " " +  str(udp) + " udp/' /tmp/clientConfigs/" + dockerId + ".ovpn"
+        tcpChange = "sed -i 's/^remote " + str(local_ip_address) + " 443 tcp-client*/remote " + str(local_ip_address) + " " +  str(tcp) + " tcp-client/' /tmp/clientConfigs/" + dockerId + ".ovpn"
+        
         err = subprocess.call(shlex.split(udpChange))
         print "Error for udp change ", err
         err = subprocess.call(shlex.split(tcpChange))
@@ -152,7 +159,7 @@ class HostInterface:
 
 def createNewNetwork(passcode):
 
-    
+
     sql = MysqlInterface('localhost', 'srv_tunnly', 'tunnlytest', 'tst_tunnly')
     dockerInst = DockerInterface()
 
