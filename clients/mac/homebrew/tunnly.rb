@@ -6,7 +6,7 @@ require "formula"
 
 class Tunnly < Formula
   homepage ""
-  url "tunnly.io/static/tunnly.tar.gz"
+  url "tunnly.io/static/tunnly.tar"
   sha1 ""
   version "0.0.1"
 
