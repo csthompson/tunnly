@@ -159,36 +159,44 @@ class HostInterface:
 
 def createNewNetwork(passcode):
 
-
+    #Possibly use SQLite in future use to make Tunnly Worker more portable
     sql = MysqlInterface('localhost', 'srv_tunnly', 'tunnlytest', 'tst_tunnly')
     dockerInst = DockerInterface()
 
+    #Pick random UDP and TCP port numbers
     random.seed()
     udp = random.randint(1024, 49151)
     tcp = random.randint(1024, 49151)
 
 
-    #Make sure each port is unique
+    #Make sure each port is unique by checking it against the database
     while udp == tcp or sql.checkIfPortExists(udp) or sql.checkIfPortExists(tcp):
         udp = random.randint(1024, 49151)
         tcp = random.randint(1024, 49151)
 
     #Create the new network (OpenVPN docker container)
     container = dockerInst.newNetwork(udp, tcp)
+    #Get the ID of the OpenVPN docker container
     dockerId = container.get('Id')
 
+    #Use the sql interface to create a new UDP port record
     sql.createNewPortRecord(dockerId[:12], dockerId[:12], udp, 'udp')
+    #Use the sql interface to create a new TCP port record
     sql.createNewPortRecord(dockerId[:12], dockerId[:12], tcp, 'tcp')
 
-    #Attempt to retrieve the config file until it can be retrieved
+    #Attempt to retrieve the config file until it can be retrieved (may take a while while Diffie Hellman parameters are generated on Docker container)
     dockerInst.retrieveConfig(dockerId, "/tmp/clientConfigs/" + dockerId[:12] + ".ovpn")
 
+    #Create an instance of the class used to manage the Docker Host functions
     hostInt = HostInterface()
 
+    #Uses sed to modify the ovpn configuration files that are copied over from the docker container
     hostInt.modifyConfig(udp, tcp, dockerId[:12])
 
+    #Encrypt the configuration file using the passcode from the user input
     hostInt.encryptConfig("/tmp/clientConfigs/" + dockerId[:12] + ".ovpn", passcode.ljust(32, '0'))
 
+    #return the docker container ID once the network container is up
     return dockerId[:12]
 
 app = Flask(__name__)
