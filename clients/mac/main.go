@@ -137,7 +137,7 @@ func main() {
   }
 
   if args[0] == "connect" {
-    data := downloadFromUrl("http://tunnly.opendev.io:5000/network/config/" + strings.TrimSpace(args[1]))
+    data := downloadFromUrl("http://tunnly.io/network/config/" + strings.TrimSpace(args[1]))
 
     pass, _ := gopass.GetPass("Please enter the passphrase:")
 
