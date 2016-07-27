@@ -104,7 +104,7 @@ class MysqlInterface:
 
     def checkIfPortExists(self, port):
         cur = self.con.cursor()
-        cur.execute("SELECT * FROM tunnly_ports WHERE port_number = %s AND port_active=1", (port))
+        cur.execute("SELECT * FROM tunnly_ports WHERE port_number = %s AND port_active=1", (port,))
         if cur.rowcount < 1:
             return 0
         else:
