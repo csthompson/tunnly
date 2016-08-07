@@ -95,14 +95,14 @@ class RouteTableInterface:
     #Create the routes database and the routes table if it does not exist
     def __init__(self):
         self.con = sqlite3.connect(self.db)
-        conn.execute('''CREATE TABLE routes IF NOT EXISTS
-            (route_id       INT     PRIMARY KEY     AUTOINCREMENT   NOT NULL,
+        self.con.execute('''CREATE TABLE IF NOT EXISTS routes
+            (route_id       INTEGER     PRIMARY KEY     AUTOINCREMENT   ,
             docker_id       CHAR(25)                                NOT NULL,
             tunnly_id       CHAR(25)                                NOT NULL,
-            tcp_port        INT                                     NOT NULL,
-            udp_port        INT                                     NOT NULL,
-            expire_time     INT                                     NOT NULL,
-            route_active    INT                                     NOT NULL;''')
+            tcp_port        INTEGER                                     NOT NULL,
+            udp_port        INTEGER                                    NOT NULL,
+            expire_time     INTEGER                                     NOT NULL,
+            route_active    INTEGER                                     NOT NULL);''')
 
 
     #Create a new route in the routing table
@@ -117,11 +117,11 @@ class RouteTableInterface:
     def checkIfPortExists(self, portType, port):
         con = sqlite3.connect(self.db)
         if portType == 'tcp':
-            con.execute("SELECT * FROM routes WHERE tcp_port = ? AND route_active=1", (port))
+            con.execute("SELECT * FROM routes WHERE tcp_port = ? AND route_active=1", (port,))
         else:
-            con.execute("SELECT * FROM routes WHERE udp_port = ? AND route_active=1", (port))
-        
-        if con.rowcount < 1:
+            con.execute("SELECT * FROM routes WHERE udp_port = ? AND route_active=1", (port,))
+        row = con.fetchone()
+        if row is None:
             return 0
         else:
             return 1
@@ -132,7 +132,8 @@ class RouteTableInterface:
     def checkIfTunnlyCodeExists(self, code):
         con = sqlite3.connect(self.db)
         con.execute("SELECT * FROM routes WHERE tunnly_id = ? AND route_active=1", (code))
-        if con.rowcount < 1:
+        row = con.fetchone()
+        if row is None:
             return 0
         else:
             return 1
@@ -191,7 +192,7 @@ class HostInterface:
 
 class Tunnler:
     #Create a new Tunnly connection
-    def createNewNetwork(passcode, expiration):
+    def createNewNetwork(self, passcode, expiration):
 
         #Possibly use SQLite in future use to make Tunnly Worker more portable
         sql = RouteTableInterface()
@@ -234,3 +235,5 @@ class Tunnler:
         return dockerId[:12]
 
 
+tun = Tunnler()
+tun.createNewNetwork("1123", "test")
